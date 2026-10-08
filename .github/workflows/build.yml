@@ -1,19 +1,37 @@
-name: Build APK
-on: [push, workflow_dispatch]
+name: Build SBA Helper AI
+on:
+  push:
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
+          cache: gradle
       - uses: android-actions/setup-android@v3
-      - name: Build APK
-        run: gradle assembleDebug --no-daemon --stacktrace
-      - name: Upload APK
+      - name: Install Android SDK platform
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install web dependencies
+        run: npm ci
+      - name: Build web assets
+        run: npm run build
+      - name: Sync Capacitor Android project
+        run: npx cap sync android
+      - name: Build installable Android APK
+        run: cd android && ./gradlew --no-daemon assembleDebug
+      - name: Upload web build and Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: FFTools-APK
-          path: app/build/outputs/apk/debug/*.apk
+          name: sba-helper-ai-builds
+          path: |
+            dist/
+            android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

@@ -1,0 +1,9 @@
+{
+  "appId": "com.sbahelper.ai",
+  "appName": "SBA Helper AI",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  }
+}
