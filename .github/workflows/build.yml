@@ -26,7 +26,24 @@ jobs:
       - name: Sync Capacitor Android project
         run: npx cap sync android
       - name: Build installable Android APK
-        run: cd android && ./gradlew --no-daemon assembleDebug
+        run: |
+          set -o pipefail
+          cd android
+          ./gradlew --no-daemon assembleDebug --stacktrace --console=plain 2>&1 | tee ../gradle-build.log
+      - name: Report Gradle diagnostics
+        if: failure()
+        run: |
+          if [ -f gradle-build.log ]; then
+            echo '## Android build log (last 80 lines)' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 80 gradle-build.log >> "$GITHUB_STEP_SUMMARY"
+            while IFS= read -r line; do echo "::error title=Gradle build::$line"; done < <(tail -n 40 gradle-build.log)
+          fi
+      - name: Upload Gradle diagnostics
+        if: failure() && hashFiles('gradle-build.log') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: sba-helper-ai-gradle-log
+          path: gradle-build.log
       - name: Upload web build and Android APK
         uses: actions/upload-artifact@v7
         with:
