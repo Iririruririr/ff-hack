@@ -34,9 +34,15 @@ jobs:
         if: failure()
         run: |
           if [ -f gradle-build.log ]; then
-            echo '## Android build log (last 80 lines)' >> "$GITHUB_STEP_SUMMARY"
-            tail -n 80 gradle-build.log >> "$GITHUB_STEP_SUMMARY"
-            while IFS= read -r line; do echo "::error title=Gradle build::$line"; done < <(tail -n 40 gradle-build.log)
+            echo '## Android build failure' >> "$GITHUB_STEP_SUMMARY"
+            grep -n -A 5 -B 2 -E 'FAILURE:|What went wrong:|Execution failed|error:' gradle-build.log | tail -n 24 >> "$GITHUB_STEP_SUMMARY" || true
+            details="$(grep -n -A 5 -B 2 -E 'FAILURE:|What went wrong:|Execution failed|error:' gradle-build.log | tail -n 24 | tr '\n' ' ' | cut -c1-4000 || true)"
+            if [ -n "$details" ]; then
+              echo "::error title=Gradle root cause::$details"
+            else
+              details="$(tail -n 14 gradle-build.log | tr '\n' ' ' | cut -c1-4000)"
+              echo "::error title=Gradle output tail::$details"
+            fi
           fi
       - name: Upload Gradle diagnostics
         if: failure() && hashFiles('gradle-build.log') != ''
