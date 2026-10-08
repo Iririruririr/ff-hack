@@ -184,8 +184,8 @@ function Sidebar({ view, project, projectsCount, onNavigate, onContinue, open, o
   const selected = view === 'workspace' ? 'projects' : view;
   return <aside className={`sidebar ${open ? 'sidebar-open' : ''}`}>
     <div className="brand-row">
-      <div className="brand-symbol"><BookOpen size={19} strokeWidth={2.2} /><span className="brand-leaf">✦</span></div>
-      <div className="brand-wordmark"><strong>SBA helper</strong><span>AI · made for CXC</span></div>
+      <div className="brand-symbol"><BookOpen size={20} strokeWidth={2} /></div>
+      <div className="brand-wordmark"><strong>SBA Helper</strong><span>CXC study workspace</span></div>
       <button className="icon-button sidebar-close" onClick={onClose} aria-label="Close menu"><X size={18} /></button>
     </div>
     <div className="workspace-label"><span className="workspace-dot" /> STUDENT WORKSPACE</div>
@@ -197,7 +197,7 @@ function Sidebar({ view, project, projectsCount, onNavigate, onContinue, open, o
     <div className="sidebar-divider" />
     <div className="sidebar-section-label">YOUR STUDY TOOLS</div>
     <nav className="sidebar-nav">
-      <button className={`nav-link ${view === 'assistant' ? 'nav-link-active' : ''}`} onClick={() => { onNavigate('assistant'); onClose(); }}><Sparkles size={18} strokeWidth={1.85} /><span>AI SBA Coach</span><span className="nav-new">NEW</span></button>
+      <button className={`nav-link ${view === 'assistant' ? 'nav-link-active' : ''}`} onClick={() => { onNavigate('assistant'); onClose(); }}><MessageCircle size={18} strokeWidth={1.85} /><span>SBA Coach</span></button>
       <button className={`nav-link ${view === 'review' ? 'nav-link-active' : ''}`} onClick={() => { onNavigate('review'); onClose(); }}><ClipboardCheck size={18} strokeWidth={1.85} /><span>Final review</span></button>
     </nav>
     <div className="sidebar-spacer" />
@@ -208,8 +208,8 @@ function Sidebar({ view, project, projectsCount, onNavigate, onContinue, open, o
       <div className="sidebar-project-foot"><span>{getProgress(project).percent}% complete</span><button onClick={() => { onContinue(project); onClose(); }} aria-label="Continue current SBA"><ArrowUpRight size={15} /></button></div>
     </div>}
     <div className="sidebar-user">
-      <div className="avatar avatar-sidebar">MJ</div>
-      <div className="sidebar-user-copy"><strong>Maya Joseph</strong><span>Form 4 · Student</span></div>
+      <div className="avatar avatar-sidebar"><ShieldCheck size={17} /></div>
+      <div className="sidebar-user-copy"><strong>Local workspace</strong><span>Saved on this device</span></div>
       <span className={`save-dot ${saveState === 'saving' ? 'save-dot-saving' : ''}`} title={saveState === 'saving' ? 'Saving…' : 'Saved on this device'} />
     </div>
   </aside>;
@@ -218,7 +218,6 @@ function Sidebar({ view, project, projectsCount, onNavigate, onContinue, open, o
 function Topbar({ view, project, theme, onTheme, onMenu, projects, onOpenProject, saveState }) {
   const [searchText, setSearchText] = useState('');
   const [noticeOpen, setNoticeOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const searchRef = useRef(null);
   const resultList = useMemo(() => {
     const q = searchText.trim().toLowerCase();
@@ -250,7 +249,7 @@ function Topbar({ view, project, theme, onTheme, onMenu, projects, onOpenProject
       </div>
       <span className={`topbar-save ${saveState === 'saving' ? 'is-saving' : ''} ${saveState === 'error' ? 'is-error' : ''}`} title={saveState === 'error' ? 'Browser storage is unavailable or full' : 'Autosaved to this device'}><span />{saveState === 'saving' ? 'Saving' : saveState === 'error' ? 'Save issue' : 'Saved'}</span>
       <div className="popover-anchor">
-        <button className={`icon-button topbar-icon ${noticeOpen ? 'icon-button-selected' : ''}`} onClick={() => { setNoticeOpen(!noticeOpen); setProfileOpen(false); }} aria-label="Notifications"><Bell size={18} /><i className="notification-dot" /></button>
+        <button className={`icon-button topbar-icon ${noticeOpen ? 'icon-button-selected' : ''}`} onClick={() => setNoticeOpen(!noticeOpen)} aria-label="Notifications"><Bell size={18} /><i className="notification-dot" /></button>
         {noticeOpen && <>
           <button className="popover-dismiss" aria-label="Close notifications" onClick={() => setNoticeOpen(false)} />
           <div className="notification-popover">
@@ -264,13 +263,7 @@ function Topbar({ view, project, theme, onTheme, onMenu, projects, onOpenProject
         </>}
       </div>
       <button className="icon-button topbar-icon theme-switch" onClick={onTheme} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
-      <div className="popover-anchor profile-anchor">
-        <button className="profile-button" onClick={() => { setProfileOpen(!profileOpen); setNoticeOpen(false); }} aria-label="Student profile"><span className="avatar">MJ</span><ChevronDown size={14} /></button>
-        {profileOpen && <>
-          <button className="popover-dismiss" aria-label="Close profile menu" onClick={() => setProfileOpen(false)} />
-          <div className="profile-popover"><div className="profile-popover-top"><span className="avatar">MJ</span><span><strong>Maya Joseph</strong><small>Form 4 · Student</small></span></div><div className="profile-local-note"><ShieldCheck size={15} /> Your work saves on this device.</div><button className="profile-menu-item" onClick={() => setProfileOpen(false)}><Settings2 size={15} /> Preferences are in your browser settings</button></div>
-        </>}
-      </div>
+
     </div>
   </header>;
 }
@@ -280,7 +273,7 @@ function MobileNav({ view, onNavigate }) {
     { id: 'dashboard', label: 'Home', icon: LayoutDashboardIcon },
     { id: 'projects', label: 'My SBAs', icon: NotebookPen },
     { id: 'research', label: 'Research', icon: BookMarked },
-    { id: 'assistant', label: 'Coach', icon: Sparkles },
+    { id: 'assistant', label: 'Coach', icon: MessageCircle }
   ];
   const selected = view === 'workspace' ? 'projects' : view;
   return <nav className="mobile-nav" aria-label="Mobile navigation">{tabs.map(({ id, label, icon: Icon }) => <button key={id} className={selected === id ? 'mobile-nav-active' : ''} onClick={() => onNavigate(id)}><Icon size={19} /><span>{label}</span></button>)}</nav>;
@@ -298,44 +291,45 @@ function Dashboard({ projects, onNew, onContinue, onNavigate, onAsk }) {
   const active = [...projects].sort((a, b) => new Date(a.deadline || '9999-01-01') - new Date(b.deadline || '9999-01-01'));
   const totalDone = projects.reduce((total, project) => total + getProgress(project).complete, 0);
   const totalSections = projects.reduce((total, project) => total + project.sections.length, 0);
+  const overallProgress = totalSections ? Math.round((totalDone / totalSections) * 100) : 0;
   const dueSoon = active.filter((project) => { const meta = getDeadlineMeta(project.deadline); return meta.days !== null && meta.days >= 0 && meta.days <= 14; }).length;
-  const nextProject = active[0];
   const topTasks = active.map((project) => ({ project, section: project.sections.find((item) => !item.completed) })).filter((item) => item.section).slice(0, 3);
+  const nextTask = topTasks[0];
   const greeting = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening';
   const dateLabel = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date());
 
   return <div className="dashboard-page page-enter">
     <div className="page-intro dashboard-intro">
-      <div><div className="eyebrow">{dateLabel.toUpperCase()}</div><h1>{greeting}, Maya <span className="hello-sparkle">✦</span></h1><p>One section at a time. You’re making good progress.</p></div>
-      <button className="button button-primary button-new" onClick={() => onNew()}><Plus size={17} /> Create an SBA</button>
+      <div><div className="eyebrow dashboard-date"><CalendarDays size={14} /> {dateLabel}</div><h1>{greeting}.</h1><p>Your CXC SBA work, deadlines and next steps — all in one place.</p></div>
+      <button className="button button-primary button-new" onClick={() => onNew()}><Plus size={17} /> New SBA</button>
     </div>
 
     <section className="welcome-banner">
       <div className="welcome-copy">
-        <div className="banner-eyebrow"><span className="banner-eyebrow-icon"><Sparkles size={13} /></span> YOUR STUDY SIDEKICK</div>
-        <h2>Big project?<br /><em>Let’s break it down.</em></h2>
-        <p>Get clear on what each section needs, then build it with your own ideas and research.</p>
-        <button className="banner-button" onClick={() => onAsk('Help me decide what to work on next.')}>Talk to your SBA coach <ArrowUpRight size={16} /></button>
+        <div className="banner-eyebrow"><span className="banner-eyebrow-icon">{nextTask ? <ArrowUpRight size={15} /> : active.length ? <CheckCircle2 size={15} /> : <Plus size={15} />}</span>{nextTask ? 'YOUR NEXT STEP' : active.length ? 'UP TO DATE' : 'START HERE'}</div>
+        <h2>{nextTask ? nextTask.section.title : active.length ? 'Your checklists are complete.' : 'Start with one CXC SBA.'}</h2>
+        <p>{nextTask ? <><strong>{nextTask.project.topic || 'Untitled SBA'}</strong><span className="hero-separator"> · </span>{getSubject(nextTask.project.subjectId).name}. Pick up where you left off.</> : active.length ? 'Give your work a final review before exporting it.' : 'Choose a subject and topic to build a clear, section-by-section checklist.'}</p>
+        <button className="banner-button" onClick={() => nextTask ? onContinue(nextTask.project, nextTask.section.id) : active.length ? onContinue(active[0]) : onNew()}>
+          {nextTask ? 'Continue this section' : active.length ? 'Review a project' : 'Create your first SBA'} <ArrowRight size={16} />
+        </button>
       </div>
-      <div className="welcome-illustration" aria-hidden="true">
-        <div className="illustration-orbit orbit-one" /><div className="illustration-orbit orbit-two" />
-        <div className="illustration-spark spark-one">✦</div><div className="illustration-spark spark-two">✧</div><div className="illustration-spark spark-three">•</div>
-        <div className="illustration-note"><span className="note-topline" /><span className="note-line note-line-short" /><span className="note-line" /><span className="note-line note-line-mid" /><span className="note-leaf">✓</span></div>
-        <div className="illustration-orb"><BookOpen size={37} strokeWidth={1.6} /></div>
-        <div className="illustration-mini-tag"><Check size={13} /> YOUR IDEAS FIRST</div>
+      <div className="welcome-overview">
+        <span className="overview-label">OVERALL CHECKLIST PROGRESS</span>
+        <div className="overview-total"><strong>{totalDone}</strong><span> / {totalSections} sections</span></div>
+        <div className="overview-meter"><span style={{ width: `${overallProgress}%` }} /></div>
+        <div className="overview-foot"><span>{projects.length} active project{projects.length === 1 ? '' : 's'}</span><strong>{overallProgress}%</strong></div>
       </div>
-      <div className="banner-bottom-mark">CXC · CARIBBEAN STUDENTS</div>
     </section>
 
     <div className="stats-grid">
-      <div className="stat-card"><div className="stat-icon stat-icon-sage"><NotebookPen size={19} /></div><div className="stat-copy"><span>Active SBAs</span><strong>{projects.length}<small> project{projects.length === 1 ? '' : 's'}</small></strong></div><span className="stat-trend">In progress</span></div>
+      <div className="stat-card"><div className="stat-icon stat-icon-sage"><NotebookPen size={19} /></div><div className="stat-copy"><span>Active SBAs</span><strong>{projects.length}<small> project{projects.length === 1 ? '' : 's'}</small></strong></div><span className="stat-trend">Your current work</span></div>
       <div className="stat-card"><div className="stat-icon stat-icon-lilac"><CheckCircle2 size={19} /></div><div className="stat-copy"><span>Sections completed</span><strong>{totalDone}<small> / {totalSections || 0}</small></strong></div><span className="stat-trend">Across your SBAs</span></div>
-      <div className="stat-card"><div className="stat-icon stat-icon-peach"><CalendarDays size={19} /></div><div className="stat-copy"><span>Deadlines coming up</span><strong>{dueSoon}<small> in 14 days</small></strong></div><span className="stat-trend">Stay one step ahead</span></div>
+      <div className="stat-card"><div className="stat-icon stat-icon-peach"><CalendarDays size={19} /></div><div className="stat-copy"><span>Deadlines coming up</span><strong>{dueSoon}<small> in 14 days</small></strong></div><span className="stat-trend">Plan your next step</span></div>
     </div>
 
     <div className="dashboard-grid">
       <section className="panel active-panel">
-        <div className="panel-heading"><div><div className="eyebrow">YOUR WORKSPACE</div><h2>Active SBAs <span className="heading-count">{projects.length}</span></h2></div><button className="text-button" onClick={() => onNavigate('projects')}>See all <ArrowRight size={15} /></button></div>
+        <div className="panel-heading"><div><div className="eyebrow">YOUR WORKSPACE</div><h2>Active SBAs <span className="heading-count">{projects.length}</span></h2></div><button className="text-button" onClick={() => onNavigate('projects')}>All projects <ArrowRight size={15} /></button></div>
         {active.length ? <div className="active-project-list">{active.slice(0, 3).map((project) => {
           const subject = getSubject(project.subjectId);
           const progress = getProgress(project);
@@ -350,31 +344,31 @@ function Dashboard({ projects, onNew, onContinue, onNavigate, onAsk }) {
               <ProjectProgress project={project} compact />
               <div className="project-next-step"><span className="next-step-dot" />{next ? <>Next up: <strong>{next.title}</strong></> : <><strong>Ready for final review</strong></>}</div>
             </div>
-            <button className="button button-soft active-continue" onClick={() => onContinue(project)}>{next ? 'Continue SBA' : 'Review SBA'} <ArrowRight size={15} /></button>
+            <button className="button button-soft active-continue" onClick={() => onContinue(project)}>{next ? 'Continue' : 'Review'} <ArrowRight size={15} /></button>
           </article>;
         })}</div> : <div className="empty-state empty-state-compact"><div className="empty-state-icon"><NotebookPen size={22} /></div><h3>Your first SBA starts here</h3><p>Choose a subject and we’ll build a checklist around it.</p><button className="button button-primary" onClick={() => onNew()}><Plus size={16} /> Create an SBA</button></div>}
       </section>
 
       <aside className="dashboard-side-column">
         <section className="coach-card">
-          <div className="coach-card-orb"><Sparkles size={22} /></div>
-          <div className="coach-card-eyebrow">SBA COACH · READY WHEN YOU ARE</div>
-          <h2>Stuck on a section?</h2><p>Ask for a plain-language explanation, an outline, or a thoughtful next question.</p>
-          <div className="coach-quick-prompts"><button onClick={() => onAsk('Explain the next section in simple words.')}>Explain a section <ArrowUpRight size={13} /></button><button onClick={() => onAsk('Help me brainstorm a research question.')}>Brainstorm a question <ArrowUpRight size={13} /></button></div>
+          <div className="coach-card-orb"><MessageCircle size={19} /></div>
+          <div className="coach-card-eyebrow">SBA COACH</div>
+          <h2>Need a hand?</h2><p>Get a plain-language explanation or a question to help shape your own research.</p>
+          <div className="coach-quick-prompts"><button onClick={() => onAsk('Explain the next section in simple words.')}>Explain a section <ArrowUpRight size={13} /></button><button onClick={() => onAsk('Help me brainstorm a research question.')}>Shape a question <ArrowUpRight size={13} /></button></div>
           <button className="coach-main-link" onClick={() => onAsk('Help me decide what to work on next.')}>Open SBA Coach <ArrowRight size={15} /></button>
         </section>
         <section className="panel next-up-panel">
-          <div className="panel-heading panel-heading-small"><div><div className="eyebrow">A GENTLE NUDGE</div><h2>Up next</h2></div><span className="up-next-icon"><Target size={16} /></span></div>
-          {topTasks.length ? <div className="up-next-list">{topTasks.map(({ project, section }) => <button className="up-next-item" key={`${project.id}-${section.id}`} onClick={() => onContinue(project, section.id)}><span className="up-next-check"><Circle size={15} /></span><span><strong>{section.title}</strong><small>{getSubject(project.subjectId).name}</small></span><ChevronRight size={15} /></button>)}</div> : <div className="all-done-note"><CheckCircle2 size={17} /> All checklists are complete. Give them a final review!</div>}
+          <div className="panel-heading panel-heading-small"><div><div className="eyebrow">IN THE QUEUE</div><h2>Next sections</h2></div><span className="up-next-icon"><ListChecks size={16} /></span></div>
+          {topTasks.length ? <div className="up-next-list">{topTasks.map(({ project, section }) => <button className="up-next-item" key={`${project.id}-${section.id}`} onClick={() => onContinue(project, section.id)}><span className="up-next-check"><Circle size={15} /></span><span><strong>{section.title}</strong><small>{getSubject(project.subjectId).name}</small></span><ChevronRight size={15} /></button>)}</div> : <div className="all-done-note"><CheckCircle2 size={17} /> All checklists are complete. Give them a final review.</div>}
         </section>
       </aside>
     </div>
 
     <section className="recent-panel panel">
-      <div className="panel-heading"><div><div className="eyebrow">RECENTLY TOUCHED</div><h2>Pick up where you left off</h2></div><button className="text-button" onClick={() => onNavigate('projects')}>All projects <ArrowRight size={15} /></button></div>
+      <div className="panel-heading"><div><div className="eyebrow">RECENTLY UPDATED</div><h2>Pick up where you left off</h2></div><button className="text-button" onClick={() => onNavigate('projects')}>All projects <ArrowRight size={15} /></button></div>
       {projects.length ? <div className="recent-list">{[...projects].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(0, 3).map((project) => <button className="recent-item" key={project.id} onClick={() => onContinue(project)}><SubjectMark subjectId={project.subjectId} /><span className="recent-title"><strong>{project.topic || 'Untitled SBA'}</strong><small>{getSubject(project.subjectId).name} · {timeAgo(project.updatedAt)}</small></span><span className="recent-progress">{getProgress(project).percent}%</span><ArrowRight size={15} /></button>)}</div> : <p className="empty-inline">Your recent SBAs will show up here.</p>}
     </section>
-    <p className="dashboard-footnote"><ShieldCheck size={14} /> Your SBA drafts are saved on this device. Check your school’s exact instructions before you submit.</p>
+    <p className="dashboard-footnote"><ShieldCheck size={14} /> Drafts are saved on this device. Confirm your school’s exact instructions before submitting.</p>
   </div>;
 }
 
@@ -595,7 +589,7 @@ function AssistantView({ project, projects, onProjectChange, activeSection, onUp
     if (prefill) { setDraft(prefill); clearPrefill(); }
   }, [prefill, clearPrefill]);
   useEffect(() => { chatEnd.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [project.chat?.length]);
-  const firstMessage = { id: 'welcome', role: 'coach', text: `Hey Maya! I’m here to help with “${project.topic || 'your SBA'}”. I can explain requirements, ask thoughtful questions and help organize your own findings.\n\nI won’t write a complete submission for you — your research, opinions and decisions stay at the centre. What would you like to work on?` };
+  const firstMessage = { id: 'welcome', role: 'coach', text: `Hi! I’m here to help with “${project.topic || 'your SBA'}”. I can explain requirements, ask thoughtful questions and help organize your own findings.\n\nI won’t write a complete submission for you — your research, opinions and decisions stay at the centre. What would you like to work on?` };
   const messages = project.chat?.length ? project.chat : [firstMessage];
   const send = (textValue = draft) => {
     const text = textValue.trim();
@@ -616,7 +610,7 @@ function AssistantView({ project, projects, onProjectChange, activeSection, onUp
         <div className="chat-messages">{messages.map((message) => <div key={message.id} className={`chat-message chat-message-${message.role}`}>
           {message.role === 'coach' && <div className="chat-message-avatar"><Sparkles size={13} /></div>}
           <div className="chat-message-body"><div className="chat-bubble">{message.text}</div><span className="chat-time">{message.role === 'coach' ? 'SBA Coach' : 'You'}{message.createdAt ? ` · ${timeAgo(message.createdAt)}` : ''}</span></div>
-          {message.role === 'user' && <div className="avatar chat-user-avatar">MJ</div>}
+          {message.role === 'user' && <div className="avatar chat-user-avatar"><UserRound size={14} /></div>}
         </div>)}<div ref={chatEnd} /></div>
         {!project.chat?.length && <div className="chat-starters"><span>TRY ASKING</span><button onClick={() => send('Explain my next section in simple language.')}>Explain this section <ArrowRight size={13} /></button><button onClick={() => send('Help me make interview questions.')}>Help with interview questions <ArrowRight size={13} /></button><button onClick={() => send('Can you help me outline a paragraph?')}>Help structure a paragraph <ArrowRight size={13} /></button></div>}
         <div className="chat-compose-wrap"><div className="chat-compose"><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleKeyDown} placeholder="Tell me what you’re working on…" rows={1} aria-label="Message your SBA coach" /><button className="send-button" onClick={() => send()} disabled={!draft.trim()} aria-label="Send message"><Send size={17} /></button></div><div className="chat-compose-foot"><span><ShieldCheck size={13} /> Your work stays yours. Don’t share private information.</span><span>Enter to send · Shift + Enter for a new line</span></div></div>
